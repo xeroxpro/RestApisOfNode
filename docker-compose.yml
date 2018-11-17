@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+  server: 
+    container_name: expressserver
+    build: ./ 
+    ports:
+      - "8080:3000"
+    links:
+      - mongo
+
+  mongo: 
+    container_name: mongoDB
+    image: mongo:latest
+    volumes:
+      - /var/lib/mongodb:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod --port 27017
