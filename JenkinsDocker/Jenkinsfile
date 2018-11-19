@@ -1,0 +1,49 @@
+pipeline {
+  environment {
+    registry = 'laroxyl/nodejs'
+    registryCredential = 'XeroPro.2415'
+    dockerImage = ''
+  }
+  agent any
+
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/xeroxpro/RestApisOfNode'
+      }
+    }
+    stage('Build') {
+       steps {
+         sh 'sudo apt install docker -y'  
+         sh 'sudo apt install docker-compose -y'  
+         sh 'sudo docker-compose up --build -d'
+       }
+    }
+    stage('Get-Test') {
+      steps {
+        sh ' sudo curl -XGET "http://172.17.0.1:8000/api/ninjas"'
+      }
+    }
+    stage('Post-Test') {
+      steps{
+        
+          sh """sudo curl -XPOST 'http://172.17.0.1:8000/api/ninjas' -H 'Content-Type: application/json'  -d '{"name": "davidwalsh", "rank": "redbelt"}'"""
+          sh 'sudo curl -XGET "http://172.17.0.1:8000/api/ninjas"'
+      }
+    }
+    stage('Put-Test'){
+        steps{
+             sh """sudo curl -XPUT 'http://172.17.0.1:8000/api/ninjas/5bf30f15cb1b940008d271af' -H 'Content-Type: application/json'  -d '{"name": "Yusuf", "rank": "green-blet"}'"""
+          sh 'sudo curl -XGET "http://172.17.0.1:8000/api/ninjas"'
+        }
+    }
+     stage('Delete-Test'){
+        steps{
+             sh """sudo curl -XDELETE 'http://172.17.0.1:8000/api/ninjas/5bf32ad797e69000080b999f'"""
+          sh 'sudo curl -XGET "http://172.17.0.1:8000/api/ninjas"'
+        }
+    }
+   
+    }
+  }
+
