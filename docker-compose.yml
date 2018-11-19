@@ -16,4 +16,4 @@ services:
       - /var/lib/mongodb:/data/db
     ports:
       - "27017:27017"
-    
+    command: mongod --port 27017       
