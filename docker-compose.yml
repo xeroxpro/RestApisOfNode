@@ -5,7 +5,7 @@ services:
     container_name: expressserver
     build: ./ 
     ports:
-      - "8080:3000"
+      - "8000:3000"
     links:
       - mongo
 
